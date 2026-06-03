@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meninas em Campo · Painel de Publicações</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --verde:     #1a6b3a;
+      --verde-mid: #2d9158;
+      --verde-clr: #4ec77c;
+      --ouro:      #e8b84b;
+      --ouro-clr:  #f5d27a;
+      --branco:    #f7f9f5;
+      --bg:        #0e1710;
+      --bg2:       #141f16;
+      --bg3:       #1c2b1e;
+      --text:      #d8e8d9;
+      --text-dim:  #7aa482;
+      --card-bdr:  rgba(78, 199, 124, 0.15);
+      --card-bg:   rgba(28, 43, 30, 0.7);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── FUNDO ANIMADO ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 15% 20%, rgba(26,107,58,.35) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 85% 75%, rgba(45,145,88,.2) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 60% at 50% 50%, rgba(14,23,16,.8) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* grade sutil */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(78,199,124,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(78,199,124,.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: relative;
+      z-index: 10;
+      padding: 3.5rem 2rem 2.5rem;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--verde-clr);
+      border: 1px solid rgba(78,199,124,.3);
+      border-radius: 999px;
+      padding: .3rem .85rem;
+      margin-bottom: 1.4rem;
+      background: rgba(78,199,124,.06);
+      animation: fadeUp .6s ease both;
+    }
+
+    .badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--verde-clr);
+      box-shadow: 0 0 8px var(--verde-clr);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: .5; transform: scale(.8); }
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -.02em;
+      color: var(--branco);
+      animation: fadeUp .7s .1s ease both;
+    }
+
+    h1 span {
+      color: var(--verde-clr);
+    }
+
+    .subtitle {
+      margin-top: .9rem;
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--text-dim);
+      max-width: 520px;
+      line-height: 1.6;
+      animation: fadeUp .7s .2s ease both;
+    }
+
+    /* ── BARRA DE BUSCA / FILTRO ── */
+    .search-wrap {
+      position: relative;
+      z-index: 10;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 2rem 2rem;
+      animation: fadeUp .7s .3s ease both;
+    }
+
+    .search-row {
+      display: flex;
+      gap: .75rem;
+      flex-wrap: wrap;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 220px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-bdr);
+      border-radius: 10px;
+      padding: .7rem 1.1rem .7rem 2.8rem;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .93rem;
+      outline: none;
+      transition: border-color .2s;
+      backdrop-filter: blur(8px);
+    }
+
+    .search-input::placeholder { color: var(--text-dim); }
+    .search-input:focus { border-color: var(--verde-clr); }
+
+    .search-icon {
+      position: absolute;
+      left: 2.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim);
+      pointer-events: none;
+    }
+
+    .filter-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-bdr);
+      border-radius: 10px;
+      padding: .7rem 1.2rem;
+      color: var(--text-dim);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .85rem;
+      cursor: pointer;
+      transition: all .2s;
+      backdrop-filter: blur(8px);
+      white-space: nowrap;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+      border-color: var(--verde-clr);
+      color: var(--verde-clr);
+      background: rgba(78,199,124,.08);
+    }
+
+    /* ── GRID DE CARDS ── */
+    .grid-wrap {
+      position: relative;
+      z-index: 10;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 2rem 5rem;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 1.2rem;
+      padding-bottom: .6rem;
+      border-bottom: 1px solid rgba(78,199,124,.1);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 1rem;
+    }
+
+    /* ── CARD ── */
+    .card {
+      position: relative;
+      background: var(--card-bg);
+      border: 1px solid var(--card-bdr);
+      border-radius: 14px;
+      padding: 1.4rem 1.4rem 1.1rem;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+      backdrop-filter: blur(10px);
+      transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+      animation: fadeUp .5s ease both;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(78,199,124,.06) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity .3s;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(78,199,124,.5);
+      box-shadow: 0 8px 32px rgba(0,0,0,.4), 0 0 0 1px rgba(78,199,124,.1);
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card-icon {
+      width: 36px; height: 36px;
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .card-icon.dashboard { background: rgba(78,199,124,.15); }
+    .card-icon.relatorio  { background: rgba(232,184,75,.15); }
+    .card-icon.livro      { background: rgba(100,160,255,.15); }
+    .card-icon.outro      { background: rgba(160,100,255,.15); }
+
+    .card-label {
+      font-family: 'Syne', sans-serif;
+      font-size: .65rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      opacity: .55;
+    }
+
+    .card-label.dashboard { color: var(--verde-clr); }
+    .card-label.relatorio  { color: var(--ouro-clr); }
+    .card-label.livro      { color: #a0c4ff; }
+    .card-label.outro      { color: #c8a0ff; }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--branco);
+      line-height: 1.25;
+    }
+
+    .card-desc {
+      font-size: .83rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: .4rem;
+      padding-top: .8rem;
+      border-top: 1px solid rgba(78,199,124,.08);
+    }
+
+    .card-file {
+      font-size: .73rem;
+      color: var(--text-dim);
+      font-family: 'DM Mono', monospace;
+      opacity: .7;
+    }
+
+    .card-arrow {
+      color: var(--verde-clr);
+      opacity: 0;
+      transform: translateX(-4px);
+      transition: opacity .2s, transform .2s;
+      font-size: .9rem;
+    }
+
+    .card:hover .card-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* ── ESTADO VAZIO ── */
+    .empty {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 4rem 1rem;
+      color: var(--text-dim);
+      font-size: .95rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 2rem;
+      font-size: .78rem;
+      color: var(--text-dim);
+      border-top: 1px solid rgba(78,199,124,.07);
+    }
+
+    footer a { color: var(--verde-clr); text-decoration: none; }
+
+    /* ── ANIMAÇÕES ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVO ── */
+    @media (max-width: 500px) {
+      header, .search-wrap, .grid-wrap { padding-left: 1.2rem; padding-right: 1.2rem; }
+      .search-icon { left: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="badge">Meninas em Campo</div>
+    <h1>Painel de <span>Publicações</span></h1>
+    <p class="subtitle">Acesso centralizado a todos os relatórios, dashboards e documentos do projeto.</p>
+  </header>
+
+  <div class="search-wrap">
+    <div class="search-row" style="position:relative">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input class="search-input" id="searchInput" type="search" placeholder="Buscar arquivo…" autocomplete="off" />
+      <button class="filter-btn active" data-filter="all">Todos</button>
+      <button class="filter-btn" data-filter="dashboard">Dashboard</button>
+      <button class="filter-btn" data-filter="relatorio">Relatório</button>
+      <button class="filter-btn" data-filter="livro">Livro / Compilado</button>
+    </div>
+  </div>
+
+  <div class="grid-wrap">
+    <div class="section-title" id="sectionTitle">Publicações disponíveis</div>
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <footer>
+    <p>
+      <a href="https://github.com/atuono-tech/mec_dashboards_2025" target="_blank">github.com/atuono-tech/mec_dashboards_2025</a>
+      &nbsp;·&nbsp; Meninas em Campo · Colégio Santa Cruz
+    </p>
+  </footer>
+
+  <script>
+    /* ────────────────────────────────────────────────────────
+       CATÁLOGO DE ARQUIVOS
+       Adicione / remova entradas conforme o repositório cresce.
+       Campos:
+         file     – nome do arquivo .html no repositório
+         title    – título legível
+         desc     – descrição curta
+         type     – "dashboard" | "relatorio" | "livro" | "outro"
+    ──────────────────────────────────────────────────────── */
+    const FILES = [
+      {
+        file:  "dashboard_lie_ciclo1.html",
+        title: "Dashboard LIE — Ciclo 1",
+        desc:  "Acompanhamento de indicadores e execução financeira do Ciclo 1 da Lei de Incentivo ao Esporte.",
+        type:  "dashboard"
+      },
+      {
+        file:  "relatorio_impacto_2025.html",
+        title: "Relatório de Impacto 2025",
+        desc:  "Análise de alcance social, pedagógico e esportivo das atividades do projeto ao longo de 2025.",
+        type:  "relatorio"
+      },
+      {
+        file:  "dashboard_compilado_2025.html",
+        title: "Dashboard Compilado 2025",
+        desc:  "Livro de Atividades — visão consolidada de todas as ações, treinos e participantes do ano.",
+        type:  "livro"
+      }
+      /* ← adicione mais entradas aqui */
+    ];
+
+    /* ── ícones por tipo ── */
+    const ICONS = {
+      dashboard: "📊",
+      relatorio:  "📄",
+      livro:      "📚",
+      outro:      "🔗"
+    };
+
+    /* ── estado ── */
+    let currentFilter = "all";
+    let currentSearch = "";
+
+    /* ── render ── */
+    function render() {
+      const grid = document.getElementById("grid");
+      const title = document.getElementById("sectionTitle");
+
+      const filtered = FILES.filter(f => {
+        const matchFilter = currentFilter === "all" || f.type === currentFilter;
+        const q = currentSearch.toLowerCase();
+        const matchSearch = !q || f.title.toLowerCase().includes(q) || f.desc.toLowerCase().includes(q) || f.file.toLowerCase().includes(q);
+        return matchFilter && matchSearch;
+      });
+
+      title.textContent = filtered.length
+        ? `${filtered.length} publicaç${filtered.length === 1 ? "ão" : "ões"} encontrada${filtered.length === 1 ? "" : "s"}`
+        : "Publicações disponíveis";
+
+      if (!filtered.length) {
+        grid.innerHTML = `<div class="empty">Nenhum arquivo encontrado.<br><small>Tente outro termo ou filtro.</small></div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map((f, i) => `
+        <a class="card" href="${f.file}" style="animation-delay:${i * 0.07}s">
+          <div style="display:flex;align-items:center;gap:.7rem">
+            <div class="card-icon ${f.type}">${ICONS[f.type] || "🔗"}</div>
+            <span class="card-label ${f.type}">${f.type}</span>
+          </div>
+          <div class="card-title">${f.title}</div>
+          <div class="card-desc">${f.desc}</div>
+          <div class="card-footer">
+            <span class="card-file">${f.file}</span>
+            <span class="card-arrow">→</span>
+          </div>
+        </a>
+      `).join("");
+    }
+
+    /* ── eventos ── */
+    document.getElementById("searchInput").addEventListener("input", e => {
+      currentSearch = e.target.value;
+      render();
+    });
+
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentFilter = btn.dataset.filter;
+        render();
+      });
+    });
+
+    /* ── init ── */
+    render();
+  </script>
+
+</body>
+</html>
